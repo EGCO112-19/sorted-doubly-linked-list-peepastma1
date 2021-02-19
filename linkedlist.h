@@ -1,5 +1,6 @@
 // self-referential structure                       
-struct Node {                                      
+struct Node {                
+   struct Node *prevPtr; // pointer to previous node                 
    int data; // each listNode contains a character 
    struct Node *nextPtr; // pointer to next node
 }; // end structure listNode                        
@@ -48,14 +49,19 @@ void insert( LLPtr *sPtr, int value )
       } // end while                                         
 
       // insert new node at beginning of list
-      if ( previousPtr == NULL ) { 
+      if ( previousPtr == NULL ) {
          newPtr->nextPtr = *sPtr;
          *sPtr = newPtr;
       } // end if
       else { // insert new node between previousPtr and currentPtr
          previousPtr->nextPtr = newPtr;
          newPtr->nextPtr = currentPtr;
+         newPtr->prevPtr = previousPtr;
       } // end else
+      if (currentPtr!=NULL)
+      {
+        currentPtr->prevPtr=newPtr;
+      }
    } // end if
    else {
       printf( "%d not inserted. No memory available.\n", value );
@@ -73,6 +79,10 @@ int deletes( LLPtr *sPtr, int value )
    if ( value == ( *sPtr )->data ) { 
       tempPtr = *sPtr; // hold onto node being removed
       *sPtr = ( *sPtr )->nextPtr; // de-thread the node
+      if(*sPtr!= NULL)
+      {
+        (*sPtr)->prevPtr = NULL;
+      }
       free( tempPtr ); // free the de-threaded node
       return value;
    } // end if
@@ -90,6 +100,10 @@ int deletes( LLPtr *sPtr, int value )
       if ( currentPtr != NULL ) { 
          tempPtr = currentPtr;
          previousPtr->nextPtr = currentPtr->nextPtr;
+         if ( currentPtr -> nextPtr != NULL)
+         {
+         currentPtr->nextPtr->prevPtr=previousPtr;
+         }
          free( tempPtr );
          return value;
       } // end if
@@ -123,3 +137,26 @@ void printList( LLPtr currentPtr )
       puts( "NULL\n" );
    } // end else
 } // end function printList
+
+// print the list reverse
+void printListR( LLPtr currentPtr )
+{ 
+   // if list is empty
+   if ( isEmpty( currentPtr ) ) {
+      puts( "List is empty.\n" );
+   } // end if
+   else { 
+      puts( "The list is:" );
+
+      // while not the end of the list
+      while ( currentPtr->nextPtr != NULL ) { 
+         currentPtr = currentPtr->nextPtr;
+      }//check the last
+      printf("NULL");
+      while ( currentPtr != NULL ) { 
+         printf( "--> %d ", currentPtr->data );
+         currentPtr = currentPtr->prevPtr;
+      }  // end while
+   }
+   printf("\n"); // end else
+} // end function printListR
