@@ -38,7 +38,8 @@ void insert( LLPtr *sPtr, int value )
    if ( newPtr != NULL ) { // is space available
       newPtr->data = value; // place value in node
       newPtr->nextPtr = NULL; // node does not link to another node
-
+      newPtr->prevPtr = NULL;
+      
       previousPtr = NULL;
       currentPtr = *sPtr;
 
